@@ -1,0 +1,23 @@
+#!/bin/bash
+
+format () {
+    find src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i
+}
+
+load() {
+    # Switch resource files
+    rm -rf resources
+    cp -r resource_bank/$2 resources
+    echo "Switched to $2"
+}
+
+save() {
+    # Save resource files
+    rm -rf resource_bank/$2
+    cp -r resources resource_bank/$2 
+    echo "Saved to to $2"
+}
+
+if [ ! -z "$1" ]; then
+    $1 $@
+fi
