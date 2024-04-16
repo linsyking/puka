@@ -33,6 +33,10 @@ add_executable(puka
 )
 
 include_directories("ext/include")
+include_directories("ext/include/sol")
+include_directories("ext/include/lua")
+include_directories("ext/include/task_runner")
+include_directories("ext/include/yyjson")
 include_directories("src")
 
 add_subdirectory("ext")

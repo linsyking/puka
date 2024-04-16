@@ -10,8 +10,12 @@ project "puka"
    targetname "puka"
 
    includedirs {
+      "src/",
       "ext/include",
-      "src/"
+      "ext/include/sol",
+      "ext/include/lua",
+      "ext/include/task_runner",
+      "ext/include/yyjson"
    }
 
    files { "src/**.cpp", "ext/**.c", "ext/**.cpp" }

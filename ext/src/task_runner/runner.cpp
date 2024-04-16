@@ -1,9 +1,9 @@
-#include "task_runner/runner.hpp"
+#include "runner.hpp"
 #include <algorithm>
 #include <mutex>
 #include <shared_mutex>
 #include <stdexcept>
-#include "task_runner/task.hpp"
+#include "task.hpp"
 
 size_t runner::thread_num() {
     runner         &r  = get();
