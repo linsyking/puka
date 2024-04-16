@@ -6,6 +6,7 @@
 #include "mgrs/task_mgr.hpp"
 #include "task_runner/runner.hpp"
 #include "sol/sol.hpp"
+#include "utils/dbg.hpp"
 #include "utils/types.hpp"
 namespace Engine {
 
@@ -46,14 +47,15 @@ void ComponentProxy::register_usertype(sol::usertype<ComponentProxy> &usertype, 
     sol::table &t = obj->ref_tbl.value();
     for (auto it = t.begin(); it != t.end(); ++it) {
         std::string key = (*it).first.as<std::string>();
-        usertype[key] =
-            sol::property([&key](ComponentProxy &tb) { return tb.getter(key); },
-                          [&key](ComponentProxy &tb, sol::object obj) { tb.setter(key, obj); });
+        // usertype[key] =
+        //     sol::property([](ComponentProxy &tb) { return tb.getter(key); },
+        //                   [](ComponentProxy &tb, sol::object obj) { tb.setter(key, obj); });
     }
 }
 
-lua_ref_raw ComponentProxy::getter(const std::string &name) {
+lua_ref_raw ComponentProxy::getter(const char *name) {
     // Get component[name]
+    DBGOUT("ComponentProxy::getter: name = " << name << ", lua_vm_id = " << component->lua_vm_id);
     std::optional<std::unique_lock<std::mutex>> opt_lock;
     if (component->lua_vm_id != runner::thread_num()) {
         // Acquire lock only if the component is not running on the current VM
@@ -63,7 +65,8 @@ lua_ref_raw ComponentProxy::getter(const std::string &name) {
     return copy(component->ref_tbl.value()[name], TaskManager::get_lua_runner().state);
 }
 
-void ComponentProxy::setter(const std::string &name, lua_ref_raw obj) {
+void ComponentProxy::setter(const char *name, lua_ref_raw obj) {
+    DBGOUT("ComponentProxy::setter: name = " << name << ", lua_vm_id = " << component->lua_vm_id);
     std::optional<std::unique_lock<std::mutex>> opt_lock;
     if (component->lua_vm_id != runner::thread_num()) {
         // Acquire lock only if the component is not running on the current VM

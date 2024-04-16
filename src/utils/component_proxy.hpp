@@ -10,8 +10,8 @@ public:
     /// Copy a lua object to another state
     lua_ref_raw copy(lua_ref_raw, sol::state &);
     ComponentProxy(LuaComponent *c) : component(c){};
-    sol::object getter(const std::string &);
-    void        setter(const std::string &, sol::object);
+    sol::object getter(const char *);
+    void        setter(const char *, sol::object);
     static void register_usertype(sol::usertype<ComponentProxy> &, LuaComponent *component);
 };
 
