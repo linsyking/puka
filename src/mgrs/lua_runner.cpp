@@ -6,6 +6,7 @@ namespace Engine {
 
 void LuaRunner::init_vm() {
     TaskManager::init_state(state);
+    component_proxy_type = state.new_usertype<ComponentProxy>("ComponentProxy");
 }
 
 void LuaRunner::load_component_proto(const std::string &type) {

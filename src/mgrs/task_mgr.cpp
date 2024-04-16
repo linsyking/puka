@@ -4,6 +4,7 @@
 #include "mgrs/lua_runner.hpp"
 #include "game.hpp"
 #include "task_runner/runner.hpp"
+#include "utils/component_proxy.hpp"
 #include "utils/dbg.hpp"
 namespace Engine {
 

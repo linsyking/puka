@@ -1,17 +1,18 @@
 #pragma once
 
 #include "sol/sol.hpp"
+#include "utils/component_proxy.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/mutex_wrapper.hpp"
 namespace Engine {
 
 struct LuaRunner {
 private:
-    size_t                                                     runner_id = 0;
     std::unordered_map<std::string, std::optional<sol::table>> component_types;
     void establish_inheritance(sol::table &instance_table, sol::table &parent_table);
 
 public:
+    size_t runner_id = 0;
     LuaRunner(size_t id) : runner_id(id) {}
     LuaRunner(const LuaRunner &other) : runner_id(other.runner_id) {}
 
@@ -28,6 +29,8 @@ public:
 
     /// Lua VM
     sol::state state;
+
+    sol::optional<sol::usertype<ComponentProxy>> component_proxy_type;
 
     /// Mutex for the lua VM
     ///

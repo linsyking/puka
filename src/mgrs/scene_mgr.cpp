@@ -97,7 +97,6 @@ lua_ref_raw SceneManager::instantiate_actor(const std::string &name) {
         actor->init_components();
         main_scene->get_scene_manager().current_scene.running_actors.push_back(actor);
 
-        std::unique_lock<std::mutex> lock2(TaskManager::get_lua_runner().mtx.get());
         return sol::make_object(TaskManager::get_lua_runner().state, actor.get());
     }
     return {};

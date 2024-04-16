@@ -9,13 +9,13 @@
 #include <vector>
 #include "components/rigidbody.hpp"
 #include "game.hpp"
+#include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
 #include "scenes/main_scene.hpp"
 #include "sol/sol.hpp"
 #include "utils/builtin_component.hpp"
 #include "utils/component.hpp"
 #include "utils/component_proxy.hpp"
-#include "utils/dbg.hpp"
 #include "utils/json.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
@@ -209,7 +209,14 @@ void Actor::cleanup_actors(std::vector<actor_ref> &actors) {
 
 lua_ref_raw Actor::get_component_ref(component_ref &comp) {
     if (lua_component_ref lc = std::dynamic_pointer_cast<LuaComponent>(comp)) {
-        return sol::make_object(TaskManager::get_lua_runner().state, ComponentProxy(lc.get()));
+        LuaRunner &runner = TaskManager::get_lua_runner();
+        if (runner.runner_id == lc->lua_vm_id) {
+            return lc->ref_tbl.value();
+        } else {
+            // Add fields
+            ComponentProxy::register_usertype(runner.component_proxy_type.value(), lc.get());
+            return sol::make_object(runner.state, ComponentProxy(lc.get()));
+        }
     }
     if (std::dynamic_pointer_cast<BuiltinComponent>(comp)) {
         return sol::make_object(TaskManager::get_lua_runner().state, comp.get());
