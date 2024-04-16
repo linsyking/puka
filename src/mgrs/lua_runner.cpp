@@ -45,4 +45,8 @@ void LuaRunner::establish_inheritance(sol::table &instance_table, sol::table &pa
     metatable["__index"] = parent_table;
 }
 
+void LuaRunner::quit() {
+    component_types.clear();
+}
+
 }  // namespace Engine

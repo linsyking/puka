@@ -29,6 +29,10 @@ void TaskManager::init() {
 
 void TaskManager::quit() {
     runner::quit();
+    // Quit Lua VMs
+    for (auto &r : runners) {
+        r.quit();
+    }
 }
 
 size_t TaskManager::find_next_vm() {

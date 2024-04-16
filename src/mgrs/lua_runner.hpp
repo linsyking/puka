@@ -23,6 +23,9 @@ public:
     /// Initialize the lua VM
     void init_vm();
 
+    /// Quit the lua VM
+    void quit();
+
     /// Lua VM
     sol::state state;
 
