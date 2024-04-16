@@ -1,11 +1,13 @@
 #include "lua_mgr.hpp"
 #include <algorithm>
 #include <iostream>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <thread>
 #include "game.hpp"
 #include "mgrs/box2d_mgr.hpp"
+#include "utils/dbg.hpp"
 #include "utils/lua_component.hpp"
 
 namespace Engine {
@@ -32,10 +34,12 @@ void open_url(const std::string &url) {
 }
 
 void lua_log(const std::string &message) {
+    std::unique_lock<std::mutex> lock(cout_mtx);
     std::cout << message << "\n";
 }
 
 void lua_log_error(const std::string &message) {
+    std::unique_lock<std::mutex> lock(cout_mtx);
     std::cerr << message << "\n";
 }
 

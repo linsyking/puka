@@ -33,10 +33,9 @@ lua_component_ref LuaRunner::create_component(const std::string &type) {
     }
     sol::table instance = state.create_table();
     establish_inheritance(instance, component_types[type].value());
-    lua_component_ref comp = std::make_shared<LuaComponent>();
+    lua_component_ref comp = std::make_shared<LuaComponent>(runner_id);
     comp->ref_tbl          = instance;
     comp->type             = type;
-    comp->lua_vm_id        = runner_id;
     return comp;
 }
 

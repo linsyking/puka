@@ -3,7 +3,11 @@
 #pragma once
 
 #include <cassert>
-#define DBGOUTPUT // Uncomment to enable debug output
+
+#include <mutex>
+static std::mutex cout_mtx;
+
+#define DBGOUTPUT  // Uncomment to enable debug output
 
 #ifdef DEBUG
 
@@ -14,9 +18,12 @@
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define DBGOUT(p) \
-    (std::cerr << "[" << __FILENAME__ << ":" << __LINE__ << " <" << __FUNCTION__ << ">] " << p << "\n")
-
+#define DBGOUT(p)                                                                                 \
+    {                                                                                             \
+        std::lock_guard<std::mutex> lock(cout_mtx);                                               \
+        std::cerr << "[" << __FILENAME__ << ":" << __LINE__ << " <" << __FUNCTION__ << ">] " << p \
+                  << "\n";                                                                        \
+    }
 
 #else
 
@@ -24,12 +31,12 @@
 
 #endif
 
-#define DBG(b) b
+#define DBG(b)       b
 #define DBGASSERT(p) assert(p)
 
 #else
 
-#define DBGOUT(p) ;
+#define DBGOUT(p)    ;
 #define DBGASSERT(p) ;
 
 #define DBG(b) ;

@@ -5,7 +5,8 @@
 #include "utils/types.hpp"
 namespace Engine {
 
-LuaComponent::LuaComponent() {
+LuaComponent::LuaComponent(size_t id) {
+    lua_vm_id        = id;
     onstart_task     = std::make_shared<lua_onstart_task>(this);
     update_task      = std::make_shared<lua_update_task>(this);
     late_update_task = std::make_shared<lua_late_update_task>(this);

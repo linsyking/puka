@@ -7,7 +7,7 @@ class LuaComponent : public Component {
 public:
     size_t                    lua_vm_id = 0;
     std::optional<sol::table> ref_tbl;
-    LuaComponent();
+    LuaComponent(size_t);
     ~LuaComponent();
     bool is_enabled() override;
     void set_enabled(bool enabled) override;

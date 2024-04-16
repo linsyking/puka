@@ -3,6 +3,7 @@
 #include "mgrs/actor.hpp"
 #include "task_runner/runner.hpp"
 #include "utils/component.hpp"
+#include "utils/dbg.hpp"
 #include <vector>
 
 namespace Engine {
