@@ -128,10 +128,9 @@ lua_ref_raw raycast(b2Vec2 pos, b2Vec2 dir, float dist) {
         return {};
     } else {
         // Create a table
-        LuaRunner                   &runner = TaskManager::get_lua_runner();
-        std::unique_lock<std::mutex> lock(runner.mtx.get());
-        sol::table                   table = runner.state.create_table();
-        table["actor"]                     = box.hit_results[0].actor;
+        LuaRunner &runner   = TaskManager::get_lua_runner();
+        sol::table table    = runner.state.create_table();
+        table["actor"]      = box.hit_results[0].actor;
         table["point"]      = sol::make_object(runner.state, box.hit_results[0].point);
         table["normal"]     = sol::make_object(runner.state, box.hit_results[0].normal);
         table["is_trigger"] = box.hit_results[0].is_trigger;
@@ -149,9 +148,8 @@ lua_ref_raw raycast_all(b2Vec2 pos, b2Vec2 dir, float dist) {
     std::sort(box.hit_results.begin(), box.hit_results.end(),
               [](const HitResult &a, const HitResult &b) { return a.fraction < b.fraction; });
     // Create a table
-    LuaRunner                   &runner = TaskManager::get_lua_runner();
-    std::unique_lock<std::mutex> lock(runner.mtx.get());
-    sol::table                   table = runner.state.create_table();
+    LuaRunner &runner = TaskManager::get_lua_runner();
+    sol::table table  = runner.state.create_table();
     for (auto &hit : box.hit_results) {
         sol::table sub_table    = runner.state.create_table();
         sub_table["actor"]      = hit.actor;

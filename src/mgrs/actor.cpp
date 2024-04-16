@@ -15,6 +15,7 @@
 #include "utils/builtin_component.hpp"
 #include "utils/component.hpp"
 #include "utils/component_proxy.hpp"
+#include "utils/dbg.hpp"
 #include "utils/json.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
@@ -207,7 +208,6 @@ void Actor::cleanup_actors(std::vector<actor_ref> &actors) {
 }
 
 lua_ref_raw Actor::get_component_ref(component_ref &comp) {
-    std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner().mtx.get());
     if (lua_component_ref lc = std::dynamic_pointer_cast<LuaComponent>(comp)) {
         return sol::make_object(TaskManager::get_lua_runner().state, ComponentProxy(lc.get()));
     }
@@ -240,8 +240,7 @@ lua_ref_raw Actor::get_components_by_type(const std::string &type) {
     std::shared_lock<std::shared_mutex> lock(mtx.get());
     // Return an indexed table with all components of the given type
 
-    std::unique_lock<std::mutex> lock2(TaskManager::get_lua_runner().mtx.get());
-    sol::table                   table = TaskManager::get_lua_runner().state.create_table();
+    sol::table table = TaskManager::get_lua_runner().state.create_table();
     for (auto &c : components) {
         if (c->type == type) {
             table.add(get_component_ref(c));
@@ -255,7 +254,6 @@ lua_ref_raw find_actor(const std::string &name) {
         std::shared_lock<std::shared_mutex> lock(main_scene->get_scene_manager().mtx);
         for (auto &actor : main_scene->running_actors()) {
             if (actor->get_name() == name) {
-                std::unique_lock<std::mutex> lock2(TaskManager::get_lua_runner().mtx.get());
                 return sol::make_object(TaskManager::get_lua_runner().state, actor.get());
             }
         }
@@ -267,8 +265,7 @@ lua_ref_raw find_actors(const std::string &name) {
     if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         std::shared_lock<std::shared_mutex> lock(main_scene->get_scene_manager().mtx);
 
-        std::unique_lock<std::mutex> lock2(TaskManager::get_lua_runner().mtx.get());
-        sol::table                   table = TaskManager::get_lua_runner().state.create_table();
+        sol::table table = TaskManager::get_lua_runner().state.create_table();
         for (auto &actor : main_scene->running_actors()) {
             if (actor->get_name() == name) {
                 table.add(sol::make_object(TaskManager::get_lua_runner().state, actor.get()));
