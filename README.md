@@ -1,10 +1,18 @@
 # The Puka Game Engine
 
+Multi-platform 2D game engine with simplicity and concurrency in mind.
+
 ## OS Support
 
 - Linux (Tier 0)
 - Windows (Tier 1)
 - OSX (Tier 2)
+
+## Features
+
+- Lua scripting language
+- JSON game configuration file
+- Multicore components
 
 ## Roadmap
 
@@ -14,22 +22,6 @@
 - [ ] Multithreading lua components (along with rendering)
 - [ ] Lua APIs to multithreading
 - [ ] Global userdata in lua
-
-## Multicore Lua
-
-We run multiple lua VMs in N threads.
-
-Each component will be mapped to a lua VM.
-
-One VM can only update one component at one time (every VM has a lock and only one thread can access its state).
-
-When user call `GetComponent` etc., the engine will return a "TableProxy" with fields set matching the real component.
-
-After that, on reading/writing to a field of that component, lua will call the getter and setter functions in the engine, which will access those data in the real component (aftering acquiring the lock of the VM of that component).
-
-## Rendering
-
-Rendering is done in the main thread while the component updating is done in other threads.
 
 ## License
 
