@@ -1,16 +1,14 @@
+Makefile
+*.make
+*.xcodeproj/
+*.xcworkspace/
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 build
 resource_bank/
 **/resources*
-**/frames
-user_input.txt
-recorded_user_input.txt
-sdl_user_input.txt
-recorded_sdl_user_input.txt
-
-# course executables
-game_engine_linux
-game_engine_osx
 
 # XCode build artifacts
 osx_build_derived_data

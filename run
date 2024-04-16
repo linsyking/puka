@@ -10,7 +10,7 @@ buildlinux () {
 
 buildwindows () {
     premake5 vs2022 --os=windows
-    rm game_engine.vcxproj.filters
+    rm *.vcxproj.filters
 }
 
 format () {
