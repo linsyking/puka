@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
-project(game_engine)
+project(puka)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -Wall -Wextra -pedantic -O3")
-add_executable(game_engine
+add_executable(puka
     dev_ext/backwardcpp/backward.cpp
     src/game.cpp
     src/main.cpp
@@ -44,4 +44,4 @@ add_subdirectory("ext/task_runner")
 add_subdirectory("ext/lua")
 add_subdirectory("ext/box2d/src")
 
-target_link_libraries(game_engine SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer bfd clua box2d trunner yyjson)
+target_link_libraries(puka SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer bfd clua box2d trunner yyjson)

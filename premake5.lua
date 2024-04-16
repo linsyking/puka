@@ -1,12 +1,13 @@
-workspace "game_engine"
+workspace "puka"
    architecture "x64"
    configurations { "Release" }
 
-project "game_engine"
+project "puka"
    kind "ConsoleApp"
    language "C++"
    targetdir ""
    cppdialect "C++17"
+   targetname "puka"
 
    includedirs {
       "ext/",
@@ -28,16 +29,14 @@ project "game_engine"
    filter "system:Windows"
       targetdir ("x64/%{cfg.buildcfg}")
       objdir ("x64/obj/%{cfg.buildcfg}")
-      targetname "game_engine_win"
       links { "SDL2", "SDL2_ttf", "SDL2_image", "SDL2_mixer" }
       libdirs {
          "ext/libsdl2/lib"
       }
       postbuildcommands ("copy ext\\libsdl2\\dll\\* x64\\%{cfg.buildcfg}")
-      defines { "GE_WINDOWS", "SDL_MAIN_HANDLED" }
+      defines { "SDL_MAIN_HANDLED" }
 
-   filter "system:MacOSX"      
-      defines { "GE_MACOSX" }
+   filter "system:MacOSX"
       linkoptions {"-F ext/libsdl2/Frameworks"}
       runpathdirs { "ext/libsdl2/Frameworks"}
       links {
@@ -46,10 +45,7 @@ project "game_engine"
          "SDL2_ttf.framework",
          "SDL2_mixer.framework"
       }
-      targetname "game_engine_osx"
 
    filter "system:Linux"
-      defines { "GE_LINUX" }
       links { "SDL2", "SDL2_ttf", "SDL2_image", "SDL2_mixer" }
-      toolset "clang"
-      targetname "game_engine_linux"
+      targetname "puka"
