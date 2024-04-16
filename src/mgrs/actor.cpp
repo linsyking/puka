@@ -11,14 +11,14 @@
 #include "game.hpp"
 #include "mgrs/task_mgr.hpp"
 #include "scenes/main_scene.hpp"
-#include "sol.hpp"
+#include "sol/sol.hpp"
 #include "utils/builtin_component.hpp"
 #include "utils/component.hpp"
 #include "utils/component_proxy.hpp"
 #include "utils/json.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
-#include "yyjson.h"
+#include "yyjson/yyjson.h"
 
 namespace Engine {
 

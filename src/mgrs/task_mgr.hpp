@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include "mgrs/lua_runner.hpp"
-#include "task.hpp"
+#include "task_runner/task.hpp"
 #include "utils/builtin_component.hpp"
 #include "utils/component.hpp"
 #include "utils/lua_component.hpp"

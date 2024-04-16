@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include "sol.hpp"
+#include "sol/sol.hpp"
 #include "glm/glm.hpp"
 
 namespace Engine {

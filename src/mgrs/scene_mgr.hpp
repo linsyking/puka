@@ -8,7 +8,7 @@
 #include "mgrs/actor_template_mgr.hpp"
 #include "utils/camera.hpp"
 #include "utils/types.hpp"
-#include "yyjson.h"
+#include "yyjson/yyjson.h"
 
 namespace Engine {
 struct Scene {

@@ -10,17 +10,11 @@ project "puka"
    targetname "puka"
 
    includedirs {
-      "ext/",
-      "ext/lua",
-      "ext/sol",
-      "ext/box2d/include",
-      "ext/box2d/src",
-      "src/",
-      "ext/yyjson/src",
-      "ext/task_runner/include"
+      "ext/include",
+      "src/"
    }
 
-   files { "src/**.hpp", "src/**.cpp", "ext/lua/*.c", "ext/box2d/src/**.cpp", "ext/yyjson/src/*.c", "ext/task_runner/src/*.cpp" }
+   files { "src/**.cpp", "ext/**.c", "ext/**.cpp" }
 
    filter "configurations:Release"
       defines { "NDEBUG" }
@@ -33,12 +27,12 @@ project "puka"
       libdirs {
          "ext/libsdl2/lib"
       }
-      postbuildcommands ("copy ext\\libsdl2\\dll\\* x64\\%{cfg.buildcfg}")
+      postbuildcommands ("copy ext\\lib\\libsdl2\\dll\\* x64\\%{cfg.buildcfg}")
       defines { "SDL_MAIN_HANDLED" }
 
    filter "system:MacOSX"
-      linkoptions {"-F ext/libsdl2/Frameworks"}
-      runpathdirs { "ext/libsdl2/Frameworks"}
+      linkoptions {"-F ext/lib/libsdl2/Frameworks"}
+      runpathdirs { "ext/lib/libsdl2/Frameworks"}
       links {
          "SDL2.framework",
          "SDL2_image.framework",

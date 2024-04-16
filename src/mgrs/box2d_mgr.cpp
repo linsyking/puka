@@ -8,7 +8,7 @@
 #include "mgrs/lua_mgr.hpp"
 #include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
-#include "sol.hpp"
+#include "sol/sol.hpp"
 namespace Engine {
 
 Box2DManager::Box2DManager() {

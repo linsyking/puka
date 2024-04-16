@@ -31,17 +31,10 @@ add_executable(puka
     src/scenes/main_scene.cpp
     src/scenes/end_scene.cpp
 )
-include_directories("ext")
-include_directories("ext/lua")
-include_directories("ext/sol")
-include_directories("ext/box2d/include")
-include_directories("ext/yyjson/src")
-include_directories("ext/task_runner/include")
+
+include_directories("ext/include")
 include_directories("src")
 
-add_subdirectory("ext/yyjson")
-add_subdirectory("ext/task_runner")
-add_subdirectory("ext/lua")
-add_subdirectory("ext/box2d/src")
+add_subdirectory("ext")
 
 target_link_libraries(puka SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer bfd clua box2d trunner yyjson)

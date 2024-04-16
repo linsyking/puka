@@ -10,9 +10,9 @@
 #include "game.hpp"
 #include "mgrs/task_mgr.hpp"
 #include "scenes/main_scene.hpp"
-#include "sol.hpp"
+#include "sol/sol.hpp"
 #include "utils/json.hpp"
-#include "yyjson.h"
+#include "yyjson/yyjson.h"
 
 namespace Engine {
 

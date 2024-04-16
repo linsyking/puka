@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sol.hpp"
+#include "sol/sol.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/mutex_wrapper.hpp"
 namespace Engine {

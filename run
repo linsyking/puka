@@ -1,5 +1,18 @@
 #!/bin/bash
 
+buildosx () {
+    premake5 xcode4 --os=macosx
+}
+
+buildlinux () {
+    premake5 gmake --os=linux
+}
+
+buildwindows () {
+    premake5 vs2022 --os=windows
+    rm game_engine.vcxproj.filters
+}
+
 format () {
     find src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i
 }

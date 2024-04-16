@@ -3,8 +3,8 @@
 #include <mutex>
 #include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
-#include "runner.hpp"
-#include "sol.hpp"
+#include "task_runner/runner.hpp"
+#include "sol/sol.hpp"
 #include "utils/types.hpp"
 namespace Engine {
 

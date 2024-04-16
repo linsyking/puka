@@ -3,7 +3,7 @@
 #include <filesystem>
 #include "consts.hpp"
 #include "utils/dbg.hpp"
-#include "yyjson.h"
+#include "yyjson/yyjson.h"
 #include "utils/json.hpp"
 
 namespace Engine {
