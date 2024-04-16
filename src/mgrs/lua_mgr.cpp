@@ -4,13 +4,14 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include "game.hpp"
 #include "mgrs/box2d_mgr.hpp"
 #include "utils/lua_component.hpp"
 
 namespace Engine {
 
 void exit_now() {
-    exit(0);
+    game().terminate();
 }
 
 void sleep(int ms) {

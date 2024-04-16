@@ -44,6 +44,7 @@ public:
         static Game instance;
         return instance;
     }
+    void                          terminate() { running = false; }
     std::shared_ptr<GeneralScene> current_scene;
     void                          main_loop();
     void                          init();

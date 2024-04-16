@@ -23,7 +23,7 @@ Config load_config() {
         std::cout << "error: num_threads must be greater than 0";
         exit(0);
     }
-    DBGOUT("using " << c.num_threads << " threads\n");
+    DBGOUT("using " << c.num_threads << " threads");
     // Load rendering config
     if (std::filesystem::exists(conf_rendering)) {
         yyjson_doc *rdoc  = EngineUtils::read_json_from_file(conf_rendering);

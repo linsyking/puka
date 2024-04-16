@@ -27,7 +27,6 @@ void MainScene::exeute_onstart_tasks() {
     while (!q.empty()) {
         auto task = q.front();
         if (task) {
-            task->on_start();
             runner::add_task(task->onstart_task);
         }
         q.pop();
