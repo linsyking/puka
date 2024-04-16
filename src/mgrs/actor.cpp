@@ -214,8 +214,17 @@ lua_ref_raw Actor::get_component_ref(component_ref &comp) {
             return lc->ref_tbl.value();
         } else {
             // Add fields
-            std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner(lc->lua_vm_id).mtx.get());
-            ComponentProxy::register_usertype(runner.component_proxy_type.value(), lc.get());
+            std::vector<std::string> keys;
+
+            runner.mtx.get().unlock();
+            {
+                std::unique_lock<std::mutex> lock(
+                    TaskManager::get_lua_runner(lc->lua_vm_id).mtx.get());
+                ComponentProxy::get_table_keys(lc->ref_tbl.value(), keys);
+            }
+            runner.mtx.get().lock();
+
+            ComponentProxy::register_usertype(runner.component_proxy_type.value(), keys);
             return sol::make_object(runner.state, ComponentProxy(lc.get()));
         }
     }
