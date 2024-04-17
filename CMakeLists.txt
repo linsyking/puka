@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
 project(puka)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -Wall -Wextra -pedantic -O3")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BACKWARDCPP dev_ext/backwardcpp/backward.cpp)
+elseif()
+    set(BACKWARDCPP)
+endif()
 add_executable(puka
-    dev_ext/backwardcpp/backward.cpp
     src/game.cpp
     src/main.cpp
     src/chore.cpp
@@ -30,6 +34,7 @@ add_executable(puka
     src/components/rigidbody.cpp
     src/scenes/main_scene.cpp
     src/scenes/end_scene.cpp
+    ${BACKWARDCPP}
 )
 
 include_directories("ext/include")
@@ -41,4 +46,6 @@ include_directories("src")
 
 add_subdirectory("ext")
 
-target_link_libraries(puka SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer bfd clua box2d trunner yyjson)
+target_link_libraries(puka debug SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer bfd clua box2d trunner yyjson)
+
+target_link_libraries(puka optimized SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer clua box2d trunner yyjson)
