@@ -26,6 +26,9 @@ void TaskManager::init() {
     runner::commit();
     // Must wait for VMs to be initialized
     runner::wait();
+
+    // Initialize tmp VM
+    tmp_runner.init_vm();
 }
 
 void TaskManager::quit() {
@@ -73,6 +76,10 @@ void TaskManager::init_state(sol::state &state) {
         "vec2", sol::constructors<glm::vec2(), glm::vec2(float, float)>());
     glm_vec2["x"] = &glm::vec2::x;
     glm_vec2["y"] = &glm::vec2::y;
+
+
+    auto component_proxy_type = state.new_usertype<ComponentProxy>("ComponentProxy");
+    component_proxy_type["get"] = &ComponentProxy::get;
 
     // Box2D bindings
     auto box2d_vec2 =

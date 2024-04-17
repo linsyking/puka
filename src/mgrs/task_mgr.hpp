@@ -34,6 +34,9 @@ public:
     /// Lua runners
     std::vector<LuaRunner> runners;
 
+    /// A temporary runner for copying values between VMs
+    LuaRunner tmp_runner = LuaRunner(0);
+
     /// Mutex to protect shared data
     std::mutex mtx;
 

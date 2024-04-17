@@ -30,8 +30,6 @@ public:
     /// Lua VM
     sol::state state;
 
-    sol::optional<sol::usertype<ComponentProxy>> component_proxy_type;
-
     /// Mutex for the lua VM
     ///
     /// Acquire the lock when accessing the VM.

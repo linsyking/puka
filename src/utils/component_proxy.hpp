@@ -1,35 +1,34 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
-#include <variant>
 #include <vector>
 #include "sol/sol.hpp"
 #include "utils/lua_component.hpp"
+#include "utils/types.hpp"
 namespace Engine {
-
-struct ProxyData;
-using table_key_t = std::variant<std::string, int>;
 
 class ComponentProxy {
     LuaComponent *component;
+    lua_ref ref;
 
 public:
-    /// Copy a lua object to proxydata
-    void        load_to_proxy(lua_ref_raw, ProxyData &);
-    lua_ref_raw save_proxy_data(sol::state &, ProxyData &);
+    /// Copy a lua object
+    lua_ref_raw copy(lua_ref_raw, sol::state &);
     ComponentProxy(LuaComponent *c) : component(c){};
-    sol::object getter(const std::string &);
-    void        setter(const std::string &, sol::object);
+
+    /// Get the ref
+    ///
+    /// Will first unlock self VM, and acquire the component VM lock.
+    ///
+    /// After copying the value, release the component VM lock and lock self.
+    lua_ref_raw get();
+
+    /// Write back ref
+    void wb();
+
     static void get_table_keys(sol::table &t, std::vector<std::string> &);
     static void register_usertype(sol::usertype<ComponentProxy> &,
                                   const std::vector<std::string> &);
-};
-
-struct ProxyData {
-    std::variant<int, double, bool, std::string, ComponentProxy,
-                 std::unordered_map<table_key_t, ProxyData>>
-        data;
 };
 
 }  // namespace Engine
