@@ -3,6 +3,7 @@
 // Manage Images
 
 #include "SDL2/SDL_render.h"
+#include "utils/mutex_wrapper.hpp"
 #include <string>
 #include <unordered_map>
 namespace Engine {
@@ -16,6 +17,7 @@ public:
     SDL_Texture        *load_image(const std::string &name);
     void                unload_image(const std::string &name);
     std::pair<int, int> get_size(const std::string &text);
+    unique_mutex        mtx;
 };
 
 // Lua bindings

@@ -1,7 +1,6 @@
 #pragma once
 #include <cstddef>
 #include <memory>
-#include <mutex>
 #include <queue>
 #include <string>
 #include <unordered_map>

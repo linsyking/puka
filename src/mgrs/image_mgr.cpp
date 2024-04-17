@@ -2,6 +2,8 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_render.h"
 #include <iostream>
+#include <mutex>
+#include <utility>
 #include "consts.hpp"
 #include "game.hpp"
 #include "render.hpp"
@@ -65,14 +67,17 @@ void image_drawui(const std::string &name, float x, float y) {
 void image_drawui_ex(const std::string &name, float x, float y, float r, float g, float b, float a,
                      int sorting_order) {
     rect_renderable_with_order renderable;
-    SDL_Texture               *text = Game::getInstance().get_image_manager().load_image(name);
     SDL_Rect                   target;
-    target.x           = static_cast<int>(x);
-    target.y           = static_cast<int>(y);
-    auto size          = Game::getInstance().get_image_manager().get_size(name);
-    target.w           = size.first;
-    target.h           = size.second;
-    renderable.texture = text;
+    target.x = static_cast<int>(x);
+    target.y = static_cast<int>(y);
+    {
+        ImageManager                &im = Game::getInstance().get_image_manager();
+        std::unique_lock<std::mutex> lock(im.mtx.get());
+        renderable.texture = Game::getInstance().get_image_manager().load_image(name);
+        auto size          = im.get_size(name);
+        target.w           = size.first;
+        target.h           = size.second;
+    }
     renderable.rect    = target;
     renderable.order   = sorting_order;
     renderable.color.r = static_cast<uint8_t>(r);
@@ -95,9 +100,15 @@ void image_draw_ex(const std::string &name, float x, float y, float degrees, flo
     if (std::shared_ptr<MainScene> main_scene = game.get_main_scene()) {
         camera_position = main_scene->get_scene_manager().get_camera().position;
     }
-    float center_x      = game.get_config().x_resolution / 2.0f;
-    float center_y      = game.get_config().y_resolution / 2.0f;
-    auto  size          = game.get_image_manager().get_size(name);
+    float               center_x = game.get_config().x_resolution / 2.0f;
+    float               center_y = game.get_config().y_resolution / 2.0f;
+    std::pair<int, int> size     = {0, 0};
+    {
+        ImageManager &im = Game::getInstance().get_image_manager();
+        std::unique_lock<std::mutex> lock(im.mtx.get());
+        size               = im.get_size(name);
+        renderable.texture = im.load_image(name);
+    }
     float scale         = game.get_config().zoom_factor;
     int   pivot_pixel_x = static_cast<int>(size.first * pivot_x * scale_x);
     int   pivot_pixel_y = static_cast<int>(size.second * pivot_y * scale_y);
@@ -115,8 +126,6 @@ void image_draw_ex(const std::string &name, float x, float y, float degrees, flo
     renderable.angle   = degrees;
     renderable.flip    = SDL_FLIP_NONE;
     renderable.order   = sorting_order;
-    SDL_Texture *text  = game.get_image_manager().load_image(name);
-    renderable.texture = text;
     renderable.color.r = static_cast<uint8_t>(r);
     renderable.color.g = static_cast<uint8_t>(g);
     renderable.color.b = static_cast<uint8_t>(b);
