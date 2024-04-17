@@ -11,7 +11,7 @@
 namespace Engine {
 
 void Renderer::init() {
-    Config config = Game::getInstance().get_config();
+    Config config = game().get_config();
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
     window   = SDL_CreateWindow(config.game_title.c_str(), 0, 0, config.x_resolution,
                                 config.y_resolution, 0);
@@ -24,7 +24,7 @@ void Renderer::init() {
 }
 
 void Renderer::clear() {
-    Config config = Game::getInstance().get_config();
+    Config config = game().get_config();
     SDL_SetRenderDrawColor(renderer, config.clear_color.r, config.clear_color.g,
                            config.clear_color.b, 255);
     SDL_RenderClear(renderer);
@@ -53,8 +53,7 @@ void Renderer::render_ui_renderable(rect_renderable_with_order r) {
 }
 
 void Renderer::render_image_renderable(rect_renderable_full r) {
-    Game &g            = Game::getInstance();
-    float scale_factor = g.get_config().zoom_factor;
+    float scale_factor = game().get_config().zoom_factor;
     SDL_SetTextureColorMod(r.texture, r.color.r, r.color.g, r.color.b);
     SDL_SetTextureAlphaMod(r.texture, r.color.a);
     SDL_RenderSetScale(renderer, scale_factor, scale_factor);

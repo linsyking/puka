@@ -13,8 +13,6 @@ void execute_component_function_col(LuaComponent *comp, const std::string &name,
 
 void exit_now();
 
-void sleep(int);
-
 void open_url(const std::string &);
 
 }  // namespace Engine

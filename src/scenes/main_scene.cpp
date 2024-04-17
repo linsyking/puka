@@ -16,10 +16,8 @@ std::vector<actor_ref> &MainScene::running_actors() {
 }
 
 void MainScene::init() {
-    Game &g = Game::getInstance();
-
     scene_manager.init();
-    scene_manager.load_scene(g.get_config().initial_scene);
+    scene_manager.load_scene(game().get_config().initial_scene);
 }
 
 void MainScene::exeute_onstart_tasks() {
@@ -60,14 +58,13 @@ void MainScene::update_user() {
     update_components();
     game().get_event_manager().update();
     // Update world
-    if (auto &mgr = Game::getInstance().get_box2d_manager()) {
+    if (auto &mgr = game().get_box2d_manager()) {
         mgr->step();
     }
 }
 
 std::shared_ptr<GeneralScene> MainScene::update() {
-    Game &g = Game::getInstance();
-    g.get_renderer().reset_reder_queue();
+    game().get_renderer().reset_reder_queue();
     scene_manager.load_next_scene_if_need();
     update_user();
     // This scene doesn't change to any other scene so always return nullptr

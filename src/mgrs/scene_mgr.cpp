@@ -85,8 +85,7 @@ void SceneManager::update_unhandled_actors() {
 }
 
 lua_ref_raw SceneManager::instantiate_actor(const std::string &name) {
-    Game &g = Game::getInstance();
-    if (std::shared_ptr<MainScene> main_scene = g.get_main_scene()) {
+    if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         std::unique_lock<std::shared_mutex> lock(main_scene->get_scene_manager().mtx);
         actor_ref                           actor = std::make_shared<Actor>(
             main_scene->get_scene_manager().actor_template_manager.get_actor_template(name));
@@ -108,8 +107,7 @@ void SceneManager::destroy_actor(Actor *actor) {
         c->set_enabled(false);
     }
     actor_ref actor_r;
-    Game     &g = Game::getInstance();
-    if (std::shared_ptr<MainScene> main_scene = g.get_main_scene()) {
+    if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         std::unique_lock<std::shared_mutex> lock(main_scene->get_scene_manager().mtx);
         for (auto &a : main_scene->actors()) {
             if (a.get() == actor) {
@@ -127,15 +125,13 @@ void SceneManager::destroy_actor(Actor *actor) {
 }
 
 void load_scene(const std::string &scene_name) {
-    Game &g = Game::getInstance();
-    if (std::shared_ptr<MainScene> main_scene = g.get_main_scene()) {
+    if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         main_scene->get_scene_manager().set_next_scene(scene_name);
     }
 }
 
 std::string get_current_scene_name() {
-    Game &g = Game::getInstance();
-    if (std::shared_ptr<MainScene> main_scene = g.get_main_scene()) {
+    if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         return main_scene->get_scene_manager().get_current_scene_name();
     }
     return "";

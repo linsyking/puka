@@ -16,7 +16,7 @@ SDL_Texture *ImageManager::load_image(const std::string &name) {
         return images[name];
     }
     std::string   path     = image_folder + "/" + name + ".png";
-    SDL_Renderer *renderer = Game::getInstance().get_renderer().get_raw_renderer();
+    SDL_Renderer *renderer = game().get_renderer().get_raw_renderer();
     SDL_Texture  *texture  = IMG_LoadTexture(renderer, path.c_str());
     if (texture == nullptr) {
         std::cout << "error: missing image " << name;
@@ -71,9 +71,9 @@ void image_drawui_ex(const std::string &name, float x, float y, float r, float g
     target.x = static_cast<int>(x);
     target.y = static_cast<int>(y);
     {
-        ImageManager                &im = Game::getInstance().get_image_manager();
+        ImageManager                &im = game().get_image_manager();
         std::unique_lock<std::mutex> lock(im.mtx.get());
-        renderable.texture = Game::getInstance().get_image_manager().load_image(name);
+        renderable.texture = game().get_image_manager().load_image(name);
         auto size          = im.get_size(name);
         target.w           = size.first;
         target.h           = size.second;
@@ -84,7 +84,7 @@ void image_drawui_ex(const std::string &name, float x, float y, float r, float g
     renderable.color.g = static_cast<uint8_t>(g);
     renderable.color.b = static_cast<uint8_t>(b);
     renderable.color.a = static_cast<uint8_t>(a);
-    Game::getInstance().get_renderer().add_ui_render_task(renderable);
+    game().get_renderer().add_ui_render_task(renderable);
 }
 
 void image_draw(const std::string &name, float x, float y) {
@@ -95,21 +95,20 @@ void image_draw_ex(const std::string &name, float x, float y, float degrees, flo
                    float scale_y, float pivot_x, float pivot_y, float r, float g, float b, float a,
                    int sorting_order) {
     rect_renderable_full renderable;
-    Game                &game            = Game::getInstance();
     vec2                 camera_position = {};
-    if (std::shared_ptr<MainScene> main_scene = game.get_main_scene()) {
+    if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
         camera_position = main_scene->get_scene_manager().get_camera().position;
     }
-    float               center_x = game.get_config().x_resolution / 2.0f;
-    float               center_y = game.get_config().y_resolution / 2.0f;
+    float               center_x = game().get_config().x_resolution / 2.0f;
+    float               center_y = game().get_config().y_resolution / 2.0f;
     std::pair<int, int> size     = {0, 0};
     {
-        ImageManager &im = Game::getInstance().get_image_manager();
+        ImageManager &im = game().get_image_manager();
         std::unique_lock<std::mutex> lock(im.mtx.get());
         size               = im.get_size(name);
         renderable.texture = im.load_image(name);
     }
-    float scale         = game.get_config().zoom_factor;
+    float scale         = game().get_config().zoom_factor;
     int   pivot_pixel_x = static_cast<int>(size.first * pivot_x * scale_x);
     int   pivot_pixel_y = static_cast<int>(size.second * pivot_y * scale_y);
     renderable.center.x = pivot_pixel_x;
@@ -130,7 +129,7 @@ void image_draw_ex(const std::string &name, float x, float y, float degrees, flo
     renderable.color.g = static_cast<uint8_t>(g);
     renderable.color.b = static_cast<uint8_t>(b);
     renderable.color.a = static_cast<uint8_t>(a);
-    game.get_renderer().add_image_render_task(renderable);
+    game().get_renderer().add_image_render_task(renderable);
 }
 
 void image_draw_pixel(float x, float y, float r, float g, float b, float a) {
@@ -141,7 +140,7 @@ void image_draw_pixel(float x, float y, float r, float g, float b, float a) {
     renderable.color.g = static_cast<uint8_t>(g);
     renderable.color.b = static_cast<uint8_t>(b);
     renderable.color.a = static_cast<uint8_t>(a);
-    Game::getInstance().get_renderer().add_pixel_render_task(renderable);
+    game().get_renderer().add_pixel_render_task(renderable);
 }
 
 }  // namespace Engine

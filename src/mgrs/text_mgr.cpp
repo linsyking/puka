@@ -27,7 +27,6 @@ void TextManager::quit() {
 
 void TextManager::draw_text(const std::string &text, const std::string &font_name, int font_size,
                             const vec2 &pos, SDL_Color color) {
-    Game &g = Game::getInstance();
     // Check font cache
     TTF_Font *font = nullptr;
     if (font_cache.find(font_name) != font_cache.end() &&
@@ -46,7 +45,7 @@ void TextManager::draw_text(const std::string &text, const std::string &font_nam
 
     SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture *texture =
-        SDL_CreateTextureFromSurface(g.get_renderer().get_raw_renderer(), surface);
+        SDL_CreateTextureFromSurface(game().get_renderer().get_raw_renderer(), surface);
     SDL_Rect rect;
     rect.x = static_cast<int>(pos.x);
     rect.y = static_cast<int>(pos.y);
@@ -54,18 +53,17 @@ void TextManager::draw_text(const std::string &text, const std::string &font_nam
     rect_renderable r;
     r.texture = texture;
     r.rect    = rect;
-    g.get_renderer().add_text_render_task(r);
+    game().get_renderer().add_text_render_task(r);
 }
 
 void draw_text(const std::string &str, float x, float y, const std::string &font, int size,
                uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-    Game     &game = Game::getInstance();
     SDL_Color color;
     color.r = r;
     color.g = g;
     color.b = b;
     color.a = a;
-    game.get_text_manager().draw_text(str, font, size, {x, y}, color);
+    game().get_text_manager().draw_text(str, font, size, {x, y}, color);
 }
 
 }  // namespace Engine

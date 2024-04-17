@@ -4,7 +4,6 @@
 #include <mutex>
 #include <stdexcept>
 #include <string>
-#include <thread>
 #include "game.hpp"
 #include "mgrs/box2d_mgr.hpp"
 #include "utils/dbg.hpp"
@@ -14,10 +13,6 @@ namespace Engine {
 
 void exit_now() {
     game().terminate();
-}
-
-void sleep(int ms) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
 void open_url(const std::string &url) {

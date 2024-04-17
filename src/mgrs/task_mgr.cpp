@@ -134,7 +134,6 @@ void TaskManager::init_state(sol::state &state) {
     auto app_namespace = state["Application"].get_or_create<sol::table>();
     app_namespace.set_function("Quit", exit_now);
     app_namespace.set_function("GetFrame", Game::get_frame_num);
-    app_namespace.set_function("Sleep", sleep);
     app_namespace.set_function("OpenURL", open_url);
 
     auto input_namespace = state["Input"].get_or_create<sol::table>();

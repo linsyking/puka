@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SDL2/SDL_mixer.h"
+#include "utils/mutex_wrapper.hpp"
 #include <string>
 #include <unordered_map>
 namespace Engine {
@@ -12,13 +13,14 @@ private:
     Mix_Chunk                                   *load_channel(const std::string &name);
 
 public:
-    void init();
-    void quit();
-    void halt_bgm();
-    void change_bgm(const std::string &name);
-    void play_bgm(int loop = -1);
-    void play_channel(int channel, const std::string &name, int loop = 0);
-    void halt_channel(int channel);
+    unique_mutex mtx;
+    void         init();
+    void         quit();
+    void         halt_bgm();
+    void         change_bgm(const std::string &name);
+    void         play_bgm(int loop = -1);
+    void         play_channel(int channel, const std::string &name, int loop = 0);
+    void         halt_channel(int channel);
 };
 
 // Lua bindings

@@ -2,6 +2,7 @@
 #include "SDL2/SDL_mixer.h"
 #include <filesystem>
 #include <iostream>
+#include <mutex>
 #include <string>
 #include "game.hpp"
 #include "consts.hpp"
@@ -67,14 +68,18 @@ void AudioManager::halt_channel(int channel) {
 }
 
 void play_audio(int channel, const std::string &name, bool loop) {
-    Game::getInstance().get_audio_manager().play_channel(channel, name, loop);
+    std::unique_lock<std::mutex> lock(game().get_audio_manager().mtx.get());
+    game().get_audio_manager().play_channel(channel, name, loop);
 }
 
 void halt_audio(int channel) {
+    std::unique_lock<std::mutex> lock(game().get_audio_manager().mtx.get());
     Mix_HaltChannel(channel);
 }
 
 void set_volume(int channel, float volume) {
+    std::unique_lock<std::mutex> lock(game().get_audio_manager().mtx.get());
+
     int vol = static_cast<int>(volume);
     Mix_Volume(channel, vol);
 }

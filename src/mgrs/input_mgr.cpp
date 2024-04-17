@@ -109,7 +109,7 @@ MouseStatus InputManager::get_mouse() const {
 }
 
 bool get_mouse(int key) {
-    MouseStatus mouse = Game::getInstance().get_input_manager().get_mouse();
+    MouseStatus mouse = game().get_input_manager().get_mouse();
     if (key == SDL_BUTTON_LEFT) {
         return mouse.left;
     } else if (key == SDL_BUTTON_MIDDLE) {
@@ -121,19 +121,19 @@ bool get_mouse(int key) {
 }
 
 bool get_mouse_down(int key) {
-    return Game::getInstance().get_input_manager().is_mouse_down(key);
+    return game().get_input_manager().is_mouse_down(key);
 }
 
 bool get_mouse_up(int key) {
-    return Game::getInstance().get_input_manager().is_mouse_up(key);
+    return game().get_input_manager().is_mouse_up(key);
 }
 
 vec2 get_mouse_position() {
-    return Game::getInstance().get_input_manager().get_mouse().position;
+    return game().get_input_manager().get_mouse().position;
 }
 
 float get_mouse_scroll_delta() {
-    return Game::getInstance().get_input_manager().get_mouse().scroll_delta;
+    return game().get_input_manager().get_mouse().scroll_delta;
 }
 
 std::unordered_map<std::string, SDL_Scancode> __keycode_to_scancode = {
@@ -213,15 +213,15 @@ std::unordered_map<std::string, SDL_Scancode> __keycode_to_scancode = {
 };
 
 bool get_key(const std::string &key) {
-    return Game::getInstance().get_input_manager().is_key_pressed(__keycode_to_scancode[key]);
+    return game().get_input_manager().is_key_pressed(__keycode_to_scancode[key]);
 }
 
 bool get_key_down(const std::string &key) {
-    return Game::getInstance().get_input_manager().is_key_down(__keycode_to_scancode[key]);
+    return game().get_input_manager().is_key_down(__keycode_to_scancode[key]);
 }
 
 bool get_key_up(const std::string &key) {
-    return Game::getInstance().get_input_manager().is_key_up(__keycode_to_scancode[key]);
+    return game().get_input_manager().is_key_up(__keycode_to_scancode[key]);
 }
 
 }  // namespace Engine
