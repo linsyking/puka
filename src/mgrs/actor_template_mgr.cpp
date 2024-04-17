@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <iostream>
 #include "consts.hpp"
+#include "game.hpp"
 #include "utils/json.hpp"
 #include "yyjson/yyjson.h"
 
@@ -16,8 +17,8 @@ Actor ActorTemplateManager::get_actor_template(const std::string &name) {
         // Load the actor from the file
         std::string file_path = actor_templates_folder + "/" + name + ".template";
         if (!std::filesystem::exists(file_path)) {
-            std::cout << "error: template " << name << " is missing";
-            exit(0);
+            game().terminate();
+            throw std::runtime_error("missing actor template " + name);
         }
         yyjson_doc *doc = EngineUtils::read_json_from_file(file_path);
         Actor       actor;

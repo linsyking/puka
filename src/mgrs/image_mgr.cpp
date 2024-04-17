@@ -7,6 +7,7 @@
 #include "consts.hpp"
 #include "game.hpp"
 #include "render.hpp"
+#include "utils/dbg.hpp"
 
 namespace Engine {
 
@@ -18,9 +19,10 @@ SDL_Texture *ImageManager::load_image(const std::string &name) {
     std::string   path     = image_folder + "/" + name + ".png";
     SDL_Renderer *renderer = game().get_renderer().get_raw_renderer();
     SDL_Texture  *texture  = IMG_LoadTexture(renderer, path.c_str());
+    DBGOUT("Hihi");
     if (texture == nullptr) {
-        std::cout << "error: missing image " << name;
-        exit(0);
+        game().terminate();
+        throw std::runtime_error("missing image " + name);
     }
     images[name] = texture;
     return texture;
@@ -103,7 +105,7 @@ void image_draw_ex(const std::string &name, float x, float y, float degrees, flo
     float               center_y = game().get_config().y_resolution / 2.0f;
     std::pair<int, int> size     = {0, 0};
     {
-        ImageManager &im = game().get_image_manager();
+        ImageManager                &im = game().get_image_manager();
         std::unique_lock<std::mutex> lock(im.mtx.get());
         size               = im.get_size(name);
         renderable.texture = im.load_image(name);

@@ -24,8 +24,8 @@ void SceneManager::init() {
 void SceneManager::load_document_to_scene(yyjson_val *root) {
     yyjson_val *actors = yyjson_obj_get(root, "actors");
     if (!actors) {
-        std::cout << "error: scene " << current_scene_name << " is missing actors";
-        exit(0);
+        game().terminate();
+        throw std::runtime_error("missing actors in scene " + current_scene_name);
     }
     yyjson_val     *val  = nullptr;
     yyjson_arr_iter iter = yyjson_arr_iter_with(actors);
@@ -53,8 +53,8 @@ void SceneManager::load_scene(const std::string &scene_name) {
     current_scene_name     = scene_name;
     std::string scene_path = scene_folder + "/" + scene_name + ".scene";
     if (!std::filesystem::exists(scene_path)) {
-        std::cout << "error: scene " << scene_name << " is missing";
-        exit(0);
+        game().terminate();
+        throw std::runtime_error("missing scene " + scene_name);
     }
     yyjson_doc *doc = EngineUtils::read_json_from_file(scene_path);
     load_document_to_scene(yyjson_doc_get_root(doc));

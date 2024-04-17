@@ -15,8 +15,8 @@ std::string AudioManager::music_path(const std::string &name) {
         path = audio_folder + "/" + name + ".ogg";
     }
     if (!std::filesystem::exists(path)) {
-        std::cout << " error: failed to play audio clip " << name;
-        exit(0);
+        game().terminate();
+        throw std::runtime_error("missing audio " + name);
     }
     return path;
 }

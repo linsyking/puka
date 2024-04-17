@@ -81,8 +81,8 @@ void RigidbodyComponent::on_start() {
                 circle.m_radius   = def.radius;
                 fixture_def.shape = &circle;
             } else {
-                std::cout << "error: invalid collider type\n";
-                exit(0);
+                game().terminate();
+                throw std::runtime_error("invalid collider type");
             }
             fixture_def.filter.categoryBits = 0b0010;
             fixture_def.filter.maskBits     = 0b0010;
@@ -105,8 +105,8 @@ void RigidbodyComponent::on_start() {
                 circle.m_radius   = def.trigger_radius;
                 fixture_def.shape = &circle;
             } else {
-                std::cout << "error: invalid collider type\n";
-                exit(0);
+                game().terminate();
+                throw std::runtime_error("invalid collider type");
             }
             fixture_def.filter.categoryBits = 0b0100;
             fixture_def.filter.maskBits     = 0b0100;

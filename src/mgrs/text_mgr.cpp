@@ -37,8 +37,8 @@ void TextManager::draw_text(const std::string &text, const std::string &font_nam
         std::string font_path = font_folder + "/" + font_name + ".ttf";
         font                  = TTF_OpenFont(font_path.c_str(), font_size);
         if (!font) {
-            std::cout << "error: font " << font_name << " missing";
-            exit(0);
+            game().terminate();
+            throw std::runtime_error("missing font " + font_name);
         }
         font_cache[font_name][font_size] = font;
     }
