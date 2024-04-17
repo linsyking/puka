@@ -1,6 +1,7 @@
 #include "utils/component_proxy.hpp"
 #include <iostream>
 #include <mutex>
+#include <optional>
 #include <string>
 #include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
@@ -43,6 +44,9 @@ lua_ref_raw ComponentProxy::copy(lua_ref_raw obj, sol::state &target) {
 }
 
 lua_ref_raw ComponentProxy::get() {
+    if (trivial) {
+        return component->ref_tbl.value();
+    }
     if (!ref.has_value()) {
         // Copy from component VM to tmp VM
         LuaRunner &runner      = TaskManager::get_lua_runner();
@@ -64,7 +68,7 @@ lua_ref_raw ComponentProxy::get() {
 }
 
 void ComponentProxy::wb() {
-    if (!ref.has_value()) {
+    if (trivial || !ref.has_value()) {
         return;
     }
     LuaRunner &runner      = TaskManager::get_lua_runner();

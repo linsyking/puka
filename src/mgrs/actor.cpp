@@ -210,11 +210,8 @@ void Actor::cleanup_actors(std::vector<actor_ref> &actors) {
 lua_ref_raw Actor::get_component_ref(component_ref &comp) {
     if (lua_component_ref lc = std::dynamic_pointer_cast<LuaComponent>(comp)) {
         LuaRunner &runner = TaskManager::get_lua_runner();
-        if (runner.runner_id == lc->lua_vm_id) {
-            return lc->ref_tbl.value();
-        } else {
-            return sol::make_object(runner.state, ComponentProxy(lc.get()));
-        }
+        return sol::make_object(runner.state,
+                                ComponentProxy(lc.get(), runner.runner_id == lc->lua_vm_id));
     }
     if (std::dynamic_pointer_cast<BuiltinComponent>(comp)) {
         return sol::make_object(TaskManager::get_lua_runner().state, comp.get());

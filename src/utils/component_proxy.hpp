@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include "sol/sol.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
@@ -9,12 +7,15 @@ namespace Engine {
 
 class ComponentProxy {
     LuaComponent *component;
-    lua_ref ref;
+    lua_ref       ref;
+
+    /// Whether the component resides in the current VM
+    bool trivial = false;
 
 public:
     /// Copy a lua object
     lua_ref_raw copy(lua_ref_raw, sol::state &);
-    ComponentProxy(LuaComponent *c) : component(c){};
+    ComponentProxy(LuaComponent *c, bool trivial = false) : component(c), trivial(trivial){};
 
     /// Get the ref
     ///
@@ -25,10 +26,6 @@ public:
 
     /// Write back ref
     void wb();
-
-    static void get_table_keys(sol::table &t, std::vector<std::string> &);
-    static void register_usertype(sol::usertype<ComponentProxy> &,
-                                  const std::vector<std::string> &);
 };
 
 }  // namespace Engine

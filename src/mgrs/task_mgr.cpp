@@ -37,6 +37,7 @@ void TaskManager::quit() {
     for (auto &r : runners) {
         r.quit();
     }
+    tmp_runner.quit();
 }
 
 size_t TaskManager::find_next_vm() {
@@ -77,9 +78,9 @@ void TaskManager::init_state(sol::state &state) {
     glm_vec2["x"] = &glm::vec2::x;
     glm_vec2["y"] = &glm::vec2::y;
 
-
     auto component_proxy_type = state.new_usertype<ComponentProxy>("ComponentProxy");
     component_proxy_type["get"] = &ComponentProxy::get;
+    component_proxy_type["wb"] = &ComponentProxy::wb;
 
     // Box2D bindings
     auto box2d_vec2 =
