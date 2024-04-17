@@ -76,7 +76,7 @@ void Actor::load_from_value_inner() {
     Game &g = Game::getInstance();
     // Load components
     for (auto &c : component_attr_map) {
-        std::string   key = c.first;
+        std::string key = c.first;
         DBGOUT("Creating component " << key);
         component_ref component =
             g.get_component_manager().create_component(c.second["type"].string_v);
@@ -285,7 +285,6 @@ lua_ref_raw find_actors(const std::string &name) {
 }
 
 lua_ref_raw Actor::add_component(const std::string &type) {
-    std::unique_lock<std::shared_mutex> lock(mtx.get());
     // TODO
     static size_t idx       = 0;
     Game         &g         = Game::getInstance();
@@ -298,7 +297,10 @@ lua_ref_raw Actor::add_component(const std::string &type) {
     component->key        = key;
     component_map[key]    = component;
     component->set_actor(this);
-    component_to_add.push(component);
+    {
+        std::unique_lock<std::shared_mutex> lock(mtx.get());
+        component_to_add.push(component);
+    }
     component->init();
     return get_component_ref(component);
 }
@@ -329,14 +331,17 @@ void Actor::update_unhandled_components() {
 }
 
 void Actor::remove_component(lua_ref_raw comp) {
-    std::unique_lock<std::shared_mutex> lock(mtx.get());
-    std::string                         key;
+    std::string key;
     if (comp.is<RigidbodyComponent *>()) {
         RigidbodyComponent *rb = comp.as<RigidbodyComponent *>();
         key                    = rb->key;
+    } else if (comp.is<ComponentProxy>()) {
+        key = comp.as<ComponentProxy>().component->key;
     } else {
-        key = comp.as<sol::table>()["key"];
+        DBGOUT("warning: invalid component")
+        return;
     }
+    std::unique_lock<std::shared_mutex> lock(mtx.get());
     if (component_map.find(key) != component_map.end()) {
         component_ref component = component_map[key];
         component->set_enabled(false);

@@ -6,16 +6,15 @@
 namespace Engine {
 
 class ComponentProxy {
-    LuaComponent *component;
-    lua_ref       ref;
-
     /// Whether the component resides in the current VM
     bool trivial = false;
 
 public:
+    LuaComponent *component = nullptr;
+    lua_ref       ref;
     /// Copy a lua object
     static lua_ref_raw copy(lua_ref_raw &obj, sol::state &target);
-    ComponentProxy(LuaComponent *c, bool trivial = false) : component(c), trivial(trivial){};
+    ComponentProxy(LuaComponent *c, bool trivial = false) : trivial(trivial), component(c){};
 
     /// Get the ref
     ///
