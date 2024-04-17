@@ -14,7 +14,7 @@ class ComponentProxy {
 
 public:
     /// Copy a lua object
-    void copy(lua_ref_raw&, sol::state &, lua_ref_raw&);
+    void copy(lua_ref_raw &obj, sol::state &target, lua_ref_raw &dest, lua_ref dest_key);
     ComponentProxy(LuaComponent *c, bool trivial = false) : component(c), trivial(trivial){};
 
     /// Get the ref
