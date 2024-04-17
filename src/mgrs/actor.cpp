@@ -16,6 +16,7 @@
 #include "utils/builtin_component.hpp"
 #include "utils/component.hpp"
 #include "utils/component_proxy.hpp"
+#include "utils/dbg.hpp"
 #include "utils/json.hpp"
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
@@ -78,6 +79,9 @@ void Actor::load_from_value_inner() {
         std::string   key = c.first;
         component_ref component =
             g.get_component_manager().create_component(c.second["type"].string_v);
+        if (!component) {
+            return;
+        }
         // Initialization, no need to lock
         component->key        = key;
         component->actor_name = name;
@@ -284,10 +288,13 @@ lua_ref_raw Actor::add_component(const std::string &type) {
     static size_t idx       = 0;
     Game         &g         = Game::getInstance();
     component_ref component = g.get_component_manager().create_component(type);
-    component->actor_name   = name;
-    std::string key         = "r" + std::to_string(idx++);
-    component->key          = key;
-    component_map[key]      = component;
+    if (!component) {
+        return {};
+    }
+    component->actor_name = name;
+    std::string key       = "r" + std::to_string(idx++);
+    component->key        = key;
+    component_map[key]    = component;
     component->set_actor(this);
     component_to_add.push(component);
     component->init();

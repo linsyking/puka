@@ -7,7 +7,6 @@
 #include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
 #include "sol/sol.hpp"
-#include "utils/dbg.hpp"
 #include "utils/mutex_wrapper.hpp"
 #include "utils/types.hpp"
 namespace Engine {
@@ -19,48 +18,39 @@ void set_value(lua_ref_raw &dest, lua_ref &dest_key, lua_ref_raw &&v) {
         dest = v;
     }
 }
-void ComponentProxy::copy(lua_ref_raw &obj, sol::state &target, lua_ref_raw &dest,
-                          lua_ref dest_key) {
+
+lua_ref_raw ComponentProxy::copy(lua_ref_raw &obj, sol::state &target) {
     sol::type tp = obj.get_type();
     if (tp == sol::type::number) {
         if (obj.is<int>()) {
-            const int d = obj.as<int>();
-            set_value(dest, dest_key, sol::make_object(target, d));
+            return sol::make_object(target, obj.as<int>());
         } else {
-            const double d = obj.as<double>();
-            set_value(dest, dest_key, sol::make_object(target, d));
+            return sol::make_object(target, obj.as<double>());
         }
     } else if (tp == sol::type::boolean) {
-        const bool b = obj.as<bool>();
-        set_value(dest, dest_key, sol::make_object(target, b));
+        return sol::make_object(target, obj.as<bool>());
     } else if (tp == sol::type::string) {
-        const std::string s = obj.as<std::string>();
-        set_value(dest, dest_key, sol::make_object(target, s));
+        return sol::make_object(target, obj.as<std::string>());
     } else if (tp == sol::type::userdata) {
         if (obj.is<ComponentProxy>()) {
-            set_value(dest, dest_key, sol::make_object(target, obj.as<ComponentProxy>()));
+            return sol::make_object(target, obj.as<ComponentProxy>());
         } else if (obj.is<Actor *>()) {
-            set_value(dest, dest_key, sol::make_object(target, obj.as<Actor *>()));
+            return sol::make_object(target, obj.as<Actor *>());
         } else {
             std::cerr << "warning: userdata type not registered\n";
         }
+    } else if (tp == sol::type::function) {
+        return sol::make_object(target, obj.as<sol::function>());
     } else if (tp == sol::type::table) {
-        sol::table t = obj.as<sol::table>();
-        sol::table dest_tbl =
-            dest_key.has_value() ? dest.as<sol::table>()[dest_key.value()] : dest.as<sol::table>();
+        sol::table t     = obj.as<sol::table>();
+        sol::table tcopy = target.create_table();
         for (auto it = t.begin(); it != t.end(); ++it) {
-            auto [key, val]        = *it;
-            lua_ref_raw key_target = sol::lua_nil;
-            copy(key, target, key_target, {});
-            if (dest_tbl[key_target].valid()) {
-                copy(val, target, dest_tbl, key_target);
-            } else {
-                lua_ref_raw val_target = sol::lua_nil;
-                copy(val, target, val_target, {});
-                dest_tbl.set(key_target, val_target);
-            }
+            auto [key, val] = *it;
+            tcopy.set(copy(key, target), copy(val, target));
         }
+        return tcopy;
     }
+    return {};
 }
 
 lua_ref_raw ComponentProxy::get() {
@@ -77,14 +67,12 @@ lua_ref_raw ComponentProxy::get() {
         {
             std::unique_lock<std::mutex> lock(comp_runner.mtx.get());
             std::unique_lock<std::mutex> tmp_lock(tmp_runner.mtx.get());
-            tmp = tmp_runner.state.create_table();
-            copy(component->ref_tbl.value(), tmp_runner.state, tmp.value(), {});
+            tmp = copy(component->ref_tbl.value(), tmp_runner.state);
         }
         runner.mtx.get().lock();
         // Copy from tmp VM to ref
         std::unique_lock<std::mutex> tmp_lock(tmp_runner.mtx.get());
-        ref = runner.state.create_table();
-        copy(tmp.value(), runner.state, ref.value(), {});
+        ref = copy(tmp.value(), runner.state);
     }
     return ref.value();
 }
@@ -100,15 +88,14 @@ void ComponentProxy::wb() {
     // Copy from ref to tmp VM
     {
         std::unique_lock<std::mutex> tmp_lock(tmp_runner.mtx.get());
-        tmp = tmp_runner.state.create_table();
-        copy(ref.value(), tmp_runner.state, tmp.value(), {});
+        tmp = copy(ref.value(), tmp_runner.state);
     }
     // Copy from tmp to component VM
     runner.mtx.get().unlock();
     {
         std::unique_lock<std::mutex> lock(comp_runner.mtx.get());
         std::unique_lock<std::mutex> tmp_lock(tmp_runner.mtx.get());
-        copy(tmp.value(), comp_runner.state, component->ref_tbl.value(), {});
+        component->ref_tbl = copy(tmp.value(), comp_runner.state);
     }
     runner.mtx.get().lock();
 }

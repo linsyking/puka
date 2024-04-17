@@ -78,9 +78,9 @@ void TaskManager::init_state(sol::state &state) {
     glm_vec2["x"] = &glm::vec2::x;
     glm_vec2["y"] = &glm::vec2::y;
 
-    auto component_proxy_type = state.new_usertype<ComponentProxy>("ComponentProxy");
+    auto component_proxy_type   = state.new_usertype<ComponentProxy>("ComponentProxy");
     component_proxy_type["get"] = &ComponentProxy::get;
-    component_proxy_type["wb"] = &ComponentProxy::wb;
+    component_proxy_type["wb"]  = &ComponentProxy::wb;
 
     // Box2D bindings
     auto box2d_vec2 =
