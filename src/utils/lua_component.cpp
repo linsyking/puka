@@ -46,7 +46,7 @@ void LuaComponent::init() {
 }
 
 LuaComponent::~LuaComponent() {
-    ref_tbl->reset();
+    ref_tbl.reset();
 }
 
 bool LuaComponent::is_enabled() {
