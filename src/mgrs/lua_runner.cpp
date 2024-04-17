@@ -36,7 +36,7 @@ bool LuaRunner::load_component_proto(const std::string &type) {
 
 lua_component_ref LuaRunner::create_component(const std::string &type) {
     // Create a lua component with given type
-    bool res = false;
+    bool res = true;
     if (component_types.find(type) == component_types.end()) {
         res = load_component_proto(type);
     }

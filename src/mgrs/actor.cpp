@@ -77,9 +77,11 @@ void Actor::load_from_value_inner() {
     // Load components
     for (auto &c : component_attr_map) {
         std::string   key = c.first;
+        DBGOUT("Creating component " << key);
         component_ref component =
             g.get_component_manager().create_component(c.second["type"].string_v);
         if (!component) {
+            DBGOUT("Component creation failed");
             return;
         }
         // Initialization, no need to lock

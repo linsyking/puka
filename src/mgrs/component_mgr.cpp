@@ -17,7 +17,7 @@ component_ref ComponentManager::create_component(const std::string &type) {
     } else {
         // Lua component, find a lua VM to create the component
         size_t run_id = game().get_task_manager().find_next_vm();
-        DBGOUT(type << " component created in VM " << run_id);
+        DBGOUT(type << " component creating in VM " << run_id);
         return game().get_task_manager().runners[run_id].create_component(type);
     }
 }
