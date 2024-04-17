@@ -1,9 +1,12 @@
 #pragma once
 
+#include "utils/mutex_wrapper.hpp"
 #include "utils/types.hpp"
 namespace Engine {
 class Camera {
 public:
+    shared_mutex mtx;
+
     vec2 position = {0, 0};
 };
 

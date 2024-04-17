@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include <shared_mutex>
 #include "game.hpp"
 
 namespace Engine {
@@ -11,6 +12,8 @@ void set_position(float x, float y) {
 
 float get_position_x() {
     if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
+        std::shared_lock<std::shared_mutex> lock(
+            main_scene->get_scene_manager().get_camera().mtx.get());
         return main_scene->get_scene_manager().get_camera().position.x;
     }
     return 0;
@@ -18,6 +21,8 @@ float get_position_x() {
 
 float get_position_y() {
     if (std::shared_ptr<MainScene> main_scene = game().get_main_scene()) {
+        std::shared_lock<std::shared_mutex> lock(
+            main_scene->get_scene_manager().get_camera().mtx.get());
         return main_scene->get_scene_manager().get_camera().position.y;
     }
     return 0;
