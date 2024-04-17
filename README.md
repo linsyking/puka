@@ -18,9 +18,10 @@ Multi-platform 2D game engine with simplicity and concurrency in mind.
 
 - [x] Use `sol` instead of `luabridge`
 - [x] Use `yyjson` instead of `rapidjson`
-- [ ] Multithreading built-in components
-- [ ] Multithreading lua components (along with rendering)
+- [x] Multithreading built-in components
+- [x] Multithreading lua components (along with rendering)
 - [ ] Lua APIs to multithreading
+- [ ] Lua APIs to store private/protected data (Other component cannot access/cannot write)
 - [ ] Global userdata in lua
 
 ## License
