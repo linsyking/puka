@@ -7,6 +7,7 @@
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_video.h"
+#include "utils/mutex_wrapper.hpp"
 
 namespace Engine {
 
@@ -52,6 +53,7 @@ private:
     void                                    render_pixels();
 
 public:
+    unique_mutex  mtx;
     void          init();
     void          render_present() { SDL_RenderPresent(renderer); }
     SDL_Renderer *get_raw_renderer() { return renderer; }

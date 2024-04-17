@@ -1,4 +1,5 @@
 #include "render.hpp"
+#include <mutex>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_blendmode.h"
 #include "SDL2/SDL_render.h"
@@ -68,18 +69,22 @@ void Renderer::render_pixel_renderable(pixel_renderable r) {
 }
 
 void Renderer::add_text_render_task(rect_renderable r) {
+    std::unique_lock<std::mutex> lock(mtx.get());
     text_renderables.push_back(r);
 }
 
 void Renderer::add_ui_render_task(rect_renderable_with_order r) {
+    std::unique_lock<std::mutex> lock(mtx.get());
     ui_renderables.push_back(r);
 }
 
 void Renderer::add_image_render_task(rect_renderable_full r) {
+    std::unique_lock<std::mutex> lock(mtx.get());
     scene_renderables.push_back(r);
 }
 
 void Renderer::add_pixel_render_task(pixel_renderable r) {
+    std::unique_lock<std::mutex> lock(mtx.get());
     pixel_renderables.push_back(r);
 }
 
