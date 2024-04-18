@@ -26,6 +26,7 @@ Multi-platform 2D game engine with simplicity and concurrency in mind.
 - [ ] Error handling
 - [ ] Defer rendering commands
 - [ ] Rendering thread
+- [ ] Optimize memory, garbage collection
 
 ## License
 
