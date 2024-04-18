@@ -1,8 +1,13 @@
 #include "main_scene.hpp"
 #include "game.hpp"
 #include "mgrs/actor.hpp"
+#include "sol.hpp"
 #include "task_runner/runner.hpp"
+#include "utils/component_proxy.hpp"
 #include "utils/dbg.hpp"
+#include "utils/lua_component.hpp"
+#include "utils/types.hpp"
+#include <memory>
 #include <vector>
 
 namespace Engine {
@@ -36,6 +41,34 @@ void MainScene::exeute_onstart_tasks() {
 void MainScene::update_components() {
     for (auto &actor : actors()) {
         for (auto &c : actor->update_components) {
+            if (auto lc = std::dynamic_pointer_cast<LuaComponent>(c)) {
+                lua_ref_raw update_before = lc->ref_tbl.value()["update_before"];
+                lua_ref_raw update_after  = lc->ref_tbl.value()["update_after"];
+                if (update_before.is<sol::table>()) {
+                    // Iterate over the table
+                    sol::table t = update_before.as<sol::table>();
+                    for (auto it = t.begin(); it != t.end(); it++) {
+                        if ((*it).second.is<ComponentProxy>()) {
+                            ComponentProxy cp = (*it).second.as<ComponentProxy>();
+                            if (cp.component->has_update && cp.component->is_enabled()) {
+                                runner::add_order(c->update_task, cp.component->update_task);
+                            }
+                        }
+                    }
+                }
+                if (update_after.is<sol::table>()) {
+                    // Iterate over the table
+                    sol::table t = update_after.as<sol::table>();
+                    DBGOUT("Table size" << t.size());
+                    for (auto it = t.begin(); it != t.end(); ++it) {
+                        if ((*it).second.is<ComponentProxy>()) {
+                            ComponentProxy cp = (*it).second.as<ComponentProxy>();
+                            // TODO: Check if the component is enabled
+                            runner::add_order(cp.component->update_task, c->update_task);
+                        }
+                    }
+                }
+            }
             runner::add_task(c->update_task);
         }
     }
