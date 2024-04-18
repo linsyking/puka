@@ -40,6 +40,11 @@ public:
     /// Mutex to protect shared data
     std::mutex mtx;
 
+    /// If some lua functions must be called in the main thread,
+    /// Set this to that VM id. This will cause runner::thread_num()
+    /// to return this number.
+    size_t main_thread_running_vm = 0;
+
     size_t find_next_vm();
 
     /// Map component type to a VM

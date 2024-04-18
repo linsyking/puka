@@ -1,4 +1,5 @@
 #include "lua_component.hpp"
+#include <mutex>
 #include "mgrs/actor.hpp"
 #include "mgrs/lua_mgr.hpp"
 #include "mgrs/task_mgr.hpp"
@@ -78,24 +79,36 @@ void LuaComponent::set_enabled(bool enabled) {
 }
 
 void LuaComponent::on_collision_enter(Collision &collision) {
+    std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner(lua_vm_id).mtx.get());
+    std::unique_lock<std::mutex> tm_lock(TaskManager::get().mtx);
+    TaskManager::get().main_thread_running_vm = lua_vm_id;
     if (!dead && has_collision_enter && is_enabled()) {
         execute_component_function_col(this, "OnCollisionEnter", collision);
     }
 }
 
 void LuaComponent::on_collision_exit(Collision &collision) {
+    std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner(lua_vm_id).mtx.get());
+    std::unique_lock<std::mutex> tm_lock(TaskManager::get().mtx);
+    TaskManager::get().main_thread_running_vm = lua_vm_id;
     if (!dead && has_collision_exit && is_enabled()) {
         execute_component_function_col(this, "OnCollisionExit", collision);
     }
 }
 
 void LuaComponent::on_trigger_enter(Collision &collision) {
+    std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner(lua_vm_id).mtx.get());
+    std::unique_lock<std::mutex> tm_lock(TaskManager::get().mtx);
+    TaskManager::get().main_thread_running_vm = lua_vm_id;
     if (!dead && has_trigger_enter && is_enabled()) {
         execute_component_function_col(this, "OnTriggerEnter", collision);
     }
 }
 
 void LuaComponent::on_trigger_exit(Collision &collision) {
+    std::unique_lock<std::mutex> lock(TaskManager::get_lua_runner(lua_vm_id).mtx.get());
+    std::unique_lock<std::mutex> tm_lock(TaskManager::get().mtx);
+    TaskManager::get().main_thread_running_vm = lua_vm_id;
     if (!dead && has_trigger_exit && is_enabled()) {
         execute_component_function_col(this, "OnTriggerExit", collision);
     }

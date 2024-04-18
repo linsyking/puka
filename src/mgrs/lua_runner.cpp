@@ -25,6 +25,7 @@ bool LuaRunner::load_component_proto(const std::string &type) {
     }
     try {
         component_types[type] = state.script_file(file_path);
+        // TODO: check if the file is a valid component
         return true;
     } catch (std::exception &e) {
         std::cout << "problem with lua file " << type;

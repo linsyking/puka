@@ -3,6 +3,7 @@
 #include <mutex>
 #include <shared_mutex>
 #include <stdexcept>
+#include "mgrs/task_mgr.hpp"
 #include "task.hpp"
 
 size_t runner::thread_num() {
@@ -13,7 +14,8 @@ size_t runner::thread_num() {
             return i;
         }
     }
-    throw std::runtime_error("Thread not found");
+    // Puka specific
+    return Engine::TaskManager::get().main_thread_running_vm;
 }
 
 void runner::task_single_runner() {
