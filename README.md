@@ -24,6 +24,8 @@ Multi-platform 2D game engine with simplicity and concurrency in mind.
 - [ ] Lua APIs to store private/protected data (Other component cannot access/cannot write)
 - [ ] Global userdata in lua
 - [ ] Error handling
+- [ ] Defer rendering commands
+- [ ] Rendering thread
 
 ## License
 
