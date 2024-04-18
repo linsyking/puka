@@ -40,7 +40,7 @@ void lua_log_error(const std::string &message) {
 
 void report_err(const std::string &actor, const std::runtime_error &e) {
     std::unique_lock<std::mutex> lock(cout_mtx);
-    std::string err = e.what();
+    std::string                  err = e.what();
     std::replace(err.begin(), err.end(), '\\', '/');
     std::cout << "\033[31m" << actor << " : " << err << "\033[0m\n";
 }

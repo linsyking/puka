@@ -115,7 +115,10 @@ public:
 };
 
 class init_vm_task : public task {
+    size_t vm_id = 0;
+
 public:
+    init_vm_task(size_t vm_id) : vm_id(vm_id) { run_on = vm_id; }
     void run() override;
 };
 

@@ -1,6 +1,7 @@
 #include "main_scene.hpp"
 #include "game.hpp"
 #include "mgrs/actor.hpp"
+#include "mgrs/task_mgr.hpp"
 #include "sol.hpp"
 #include "task_runner/runner.hpp"
 #include "utils/component_proxy.hpp"
@@ -8,6 +9,7 @@
 #include "utils/lua_component.hpp"
 #include "utils/types.hpp"
 #include <memory>
+#include <mutex>
 #include <vector>
 
 namespace Engine {
@@ -47,10 +49,11 @@ void MainScene::update_components() {
                 if (update_before.is<sol::table>()) {
                     // Iterate over the table
                     sol::table t = update_before.as<sol::table>();
-                    for (auto it = t.begin(); it != t.end(); it++) {
-                        if ((*it).second.is<ComponentProxy>()) {
-                            ComponentProxy cp = (*it).second.as<ComponentProxy>();
-                            if (cp.component->has_update && cp.component->is_enabled()) {
+                    for (auto it = t.begin(); it != t.end(); ++it) {
+                        auto [key, val] = *it;
+                        if (val.is<ComponentProxy>()) {
+                            ComponentProxy cp = val.as<ComponentProxy>();
+                            if (cp.component->is_enabled() && cp.component->has_update) {
                                 runner::add_order(c->update_task, cp.component->update_task);
                             }
                         }
@@ -59,12 +62,13 @@ void MainScene::update_components() {
                 if (update_after.is<sol::table>()) {
                     // Iterate over the table
                     sol::table t = update_after.as<sol::table>();
-                    DBGOUT("Table size" << t.size());
                     for (auto it = t.begin(); it != t.end(); ++it) {
-                        if ((*it).second.is<ComponentProxy>()) {
-                            ComponentProxy cp = (*it).second.as<ComponentProxy>();
-                            // TODO: Check if the component is enabled
-                            runner::add_order(cp.component->update_task, c->update_task);
+                        auto [key, val] = *it;
+                        if (val.is<ComponentProxy>()) {
+                            ComponentProxy cp = val.as<ComponentProxy>();
+                            if (cp.component->is_enabled() && cp.component->has_update) {
+                                runner::add_order(cp.component->update_task, c->update_task);
+                            }
                         }
                     }
                 }

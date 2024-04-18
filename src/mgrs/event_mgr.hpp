@@ -15,7 +15,7 @@ public:
     std::unordered_map<std::string, std::vector<std::pair<lua_ref_raw, lua_ref_raw>>> new_events;
     void                                                                              update();
     std::mutex                                                                        mtx;
-    void quit();
+    void                                                                              quit();
 };
 
 // Lua bindings

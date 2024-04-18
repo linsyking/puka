@@ -21,7 +21,7 @@ void TaskManager::init() {
 
     // Initialize VMs
     for (size_t i = 0; i < thr_num; i++) {
-        runner::add_task(std::make_shared<init_vm_task>());
+        runner::add_task(std::make_shared<init_vm_task>(i));
     }
     runner::commit();
     // Must wait for VMs to be initialized
@@ -48,10 +48,9 @@ size_t TaskManager::find_next_vm() {
 
 void init_vm_task::run() {
     // Initialilze VM
-    size_t     thr_id = runner::thread_num();
-    LuaRunner &runner = TaskManager::get().runners[thr_id];
+    LuaRunner &runner = TaskManager::get().runners[vm_id];
     runner.init_vm();
-    DBGOUT("VM " << thr_id << " initialized");
+    DBGOUT("VM " << vm_id << " initialized on " << runner::thread_num());
 }
 
 void TaskManager::init_state(sol::state &state) {

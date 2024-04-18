@@ -51,7 +51,7 @@ public:
     std::shared_ptr<OnceRayCastCallback> once_raycast_callback;
     std::shared_ptr<AllRayCastCallback>  all_raycast_callback;
     Box2DManager();
-    void step();
+    void         step();
     unique_mutex mtx;
 };
 
