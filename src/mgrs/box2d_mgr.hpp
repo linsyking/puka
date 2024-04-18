@@ -4,6 +4,7 @@
 #include <vector>
 #include "box2d/b2_math.h"
 #include "box2d/b2_world.h"
+#include "utils/mutex_wrapper.hpp"
 #include "utils/types.hpp"
 
 namespace Engine {
@@ -51,6 +52,7 @@ public:
     std::shared_ptr<AllRayCastCallback>  all_raycast_callback;
     Box2DManager();
     void step();
+    unique_mutex mtx;
 };
 
 // Lua bindings

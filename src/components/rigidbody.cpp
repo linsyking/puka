@@ -1,6 +1,7 @@
 #include "components/rigidbody.hpp"
 #include <cstdint>
 #include <iostream>
+#include <mutex>
 #include "box2d/b2_circle_shape.h"
 #include "box2d/b2_common.h"
 #include "box2d/b2_fixture.h"
@@ -35,7 +36,8 @@ void RigidbodyComponent::set_def(Rigidbody_Def &def) {
 }
 
 void RigidbodyComponent::on_start() {
-    b2BodyDef body_def;
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
+    b2BodyDef                    body_def;
     body_def.position = b2Vec2(x, y);
     if (def.body_type == "dynamic") {
         body_def.type = b2_dynamicBody;
@@ -122,6 +124,7 @@ void RigidbodyComponent::late_update() {}
 
 b2Vec2 RigidbodyComponent::get_position() {
     if (body) {
+        std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
         return body->GetPosition();
     } else {
         return b2Vec2(x, y);
@@ -130,6 +133,7 @@ b2Vec2 RigidbodyComponent::get_position() {
 
 float RigidbodyComponent::get_rotation() {
     if (body) {
+        std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
         return rad2deg(body->GetAngle());
     } else {
         return rotation;
@@ -137,15 +141,18 @@ float RigidbodyComponent::get_rotation() {
 }
 
 void RigidbodyComponent::add_force(b2Vec2 force) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     body->ApplyForceToCenter(force, true);
 }
 
 void RigidbodyComponent::set_velocity(b2Vec2 vel) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     body->SetLinearVelocity(vel);
 }
 
 void RigidbodyComponent::set_position(b2Vec2 pos) {
     if (body) {
+        std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
         body->SetTransform(pos, body->GetAngle());
     } else {
         x = pos.x;
@@ -155,6 +162,7 @@ void RigidbodyComponent::set_position(b2Vec2 pos) {
 
 void RigidbodyComponent::set_rotation(float r) {
     if (body) {
+        std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
         body->SetTransform(body->GetPosition(), deg2rad(r));
     } else {
         rotation = r;
@@ -162,52 +170,62 @@ void RigidbodyComponent::set_rotation(float r) {
 }
 
 void RigidbodyComponent::set_angular_velocity(float v) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     body->SetAngularVelocity(deg2rad(v));
 }
 
 void RigidbodyComponent::set_gravity_scale(float g) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     body->SetGravityScale(g);
 }
 
 void RigidbodyComponent::set_up_direction(b2Vec2 d) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     d.Normalize();
     float new_angle_radians = glm::atan(d.x, -d.y);
     body->SetTransform(body->GetPosition(), new_angle_radians);
 }
 
 void RigidbodyComponent::set_right_direction(b2Vec2 d) {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     d.Normalize();
     float new_angle_radians = glm::atan(d.x, -d.y) - b2_pi / 2.0f;
     body->SetTransform(body->GetPosition(), new_angle_radians);
 }
 
 b2Vec2 RigidbodyComponent::get_velocity() {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     return body->GetLinearVelocity();
 }
 
 float RigidbodyComponent::get_angular_velocity() {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     return rad2deg(body->GetAngularVelocity());
 }
 
 float RigidbodyComponent::get_gravity_scale() {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     return body->GetGravityScale();
 }
 
 b2Vec2 RigidbodyComponent::get_up_direction() {
-    float  angle = body->GetAngle();
-    b2Vec2 res   = b2Vec2(glm::sin(angle), -glm::cos(angle));
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
+    float                        angle = body->GetAngle();
+    b2Vec2                       res   = b2Vec2(glm::sin(angle), -glm::cos(angle));
     res.Normalize();
     return res;
 }
 
 b2Vec2 RigidbodyComponent::get_right_direction() {
-    float  angle = body->GetAngle();
-    b2Vec2 res   = b2Vec2(glm::cos(angle), glm::sin(angle));
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
+    float                        angle = body->GetAngle();
+    b2Vec2                       res   = b2Vec2(glm::cos(angle), glm::sin(angle));
     res.Normalize();
     return res;
 }
 
 void RigidbodyComponent::on_destroy() {
+    std::unique_lock<std::mutex> lock(game().get_box2d_manager()->mtx.get());
     game().get_box2d_manager()->world->DestroyBody(body);
 }
 
