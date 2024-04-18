@@ -35,6 +35,11 @@ void unsubscribe_event(const std::string &type, lua_ref_raw obj, lua_ref_raw cal
     }
 }
 
+void EventManager::quit() {
+    events.clear();
+    new_events.clear();
+}
+
 void EventManager::update() {
     events = new_events;
 }

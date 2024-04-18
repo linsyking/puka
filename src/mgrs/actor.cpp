@@ -218,8 +218,8 @@ lua_ref_raw Actor::get_component_ref(component_ref &comp) {
         return sol::make_object(runner.state,
                                 ComponentProxy(lc.get(), runner.runner_id == lc->lua_vm_id));
     }
-    if (std::dynamic_pointer_cast<BuiltinComponent>(comp)) {
-        return sol::make_object(TaskManager::get_lua_runner().state, comp.get());
+    if (auto rbc = std::dynamic_pointer_cast<RigidbodyComponent>(comp)) {
+        return sol::make_object(TaskManager::get_lua_runner().state, rbc.get());
     }
     return {};
 }

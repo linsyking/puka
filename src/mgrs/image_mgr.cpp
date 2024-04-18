@@ -19,7 +19,6 @@ SDL_Texture *ImageManager::load_image(const std::string &name) {
     std::string   path     = image_folder + "/" + name + ".png";
     SDL_Renderer *renderer = game().get_renderer().get_raw_renderer();
     SDL_Texture  *texture  = IMG_LoadTexture(renderer, path.c_str());
-    DBGOUT("Hihi");
     if (texture == nullptr) {
         game().terminate();
         throw std::runtime_error("missing image " + name);

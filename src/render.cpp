@@ -7,6 +7,7 @@
 #include "SDL2/SDL_rect.h"
 #include "config.hpp"
 #include "game.hpp"
+#include "utils/dbg.hpp"
 
 namespace Engine {
 

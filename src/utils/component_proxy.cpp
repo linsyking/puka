@@ -3,6 +3,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#include "components/rigidbody.hpp"
 #include "mgrs/actor.hpp"
 #include "mgrs/lua_runner.hpp"
 #include "mgrs/task_mgr.hpp"
@@ -36,6 +37,8 @@ lua_ref_raw ComponentProxy::copy(lua_ref_raw &obj, sol::state &target) {
             return sol::make_object(target, obj.as<ComponentProxy>());
         } else if (obj.is<Actor *>()) {
             return sol::make_object(target, obj.as<Actor *>());
+        } else if (obj.is<RigidbodyComponent *>()) {
+            return sol::make_object(target, obj.as<RigidbodyComponent *>());
         } else {
             std::cerr << "warning: userdata type not registered\n";
         }

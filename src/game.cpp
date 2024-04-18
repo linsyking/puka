@@ -20,6 +20,7 @@ void Game::quit() {
     text_manager.quit();
     audio_manager.quit();
     task_manager.quit();
+    event_manager.quit();
 }
 
 void Game::init() {
