@@ -1,6 +1,5 @@
 #include "components/rigidbody.hpp"
 #include <cstdint>
-#include <iostream>
 #include <mutex>
 #include "box2d/b2_circle_shape.h"
 #include "box2d/b2_common.h"
